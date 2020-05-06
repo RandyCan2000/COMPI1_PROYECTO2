@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Pagina</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link href="../static/css/Pagina.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	
+	<!--HTML-->
+	
+	
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="Barra" style="position:static;">
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <img src="../static//Imagenes/herramientas.png" style="width: 50px; height:50px;"></a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+            <a class="dropdown-item"><input id="Abrir" type="file" onchange="leerArchivo(this.files)" accept=".java"></a>
+            <a class="dropdown-item" href="#" onclick="Analizar()">ANALIZAR</a>
+            <a class="dropdown-item" href="#" onclick="Traduccion()">TRADUCIR</a>
+            </div>
+        </li>
+        </ul>
+        <a class="navbar-brand" href="#" style="margin-right: 50%;">TRADUCTOR</a>
+  </div>
+  </nav>
+  <div id="Botones" style="height: 65px;">
+  
+  </div>
+  <h6 id="NombreSeleccion" style="text-align: center;"></h6>
+  <div id="CajasTexto">
+    
+  </div>
+  <div id="BotonesReportes">
+    <button id="Boton" (click)="MostarRep('CONSOLA')" (dblclick)="GuardarRep('CONSOLA')">CONSOLA</button>
+    <button id="Boton" (click)="MostarRep('HTML')" (dblclick)="GuardarRep('HTML')">HTLM</button>
+    <button id="Boton" (click)="MostarRep('JSON')" (dblclick)="GuardarRep('JSON')">JSON</button>
+    <button id="Boton" (click)="MostarRep('VARIABLES')">VARIABLES</button>
+    <button id="Boton" (click)="MostarRep('TOKENS')">TOKENS</button>
+    <button id="Boton" (click)="MostarRep('ERRORES')">ERRORES</button>
+  </div>
+  <div id="Reportes">
+      <div id="VARIABLES" style="overflow:scroll;">
+        <table id="RepText" class="VARIABLES" border="1" style="position: absolute; left: 5%; top: 5%;color: white;border-color: white;">
+          <tr>
+            <th> NOMBRE </th>
+            <th> TIPO </th>
+            <th> VALOR </th>
+          </tr>
+        </table>
+      </div>
+      <div id="CONSOLA">
+        <textarea id="RepText" class="CONSOLA" style="resize: none;width: 100%;height: 100%; overflow:scroll;" disabled></textarea>
+      </div>
+      <div id="HTML">
+        <textarea id="RepText" class="HTML" style="resize: none;width: 100%;height: 100%; overflow:scroll;" disabled></textarea>
+      </div>
+      <div id="JSON">
+        <textarea id="RepText" class="JSON"style="resize: none; width: 100%;height: 100%; overflow:scroll;" disabled></textarea>
+      </div>
+      <div id="TOKENS" style="overflow:scroll;">
+        <table id="RepText" class="TOKENS" border="1" style="position: absolute; left: 5%; top: 5%;color: white;border-color: white;">
+          <tr>
+            <th> ID </th>
+            <th> LEXEMA </th>
+            <th> FILA </th>
+            <th> COLUMNA </th>
+          </tr>
+        </table>
+      </div>
+      <div id="ERRORES" style="overflow:scroll;">
+        <table id="RepText" class="ERRORES" border="1" style="position: absolute; left: 5%; top: 5%;color: white;border-color: white;">
+          <tr>
+            <th> ID </th>
+            <th> LEXEMA </th>
+            <th> TIPO </th>
+            <th> ESPERADO </th>
+            <th> FILA </th>
+            <th> COLUMNA </th>
+          </tr>
+        </table>
+      </div>
+  </div>
+	
+	<!--Fin HTML-->
+  <!--JS-->
+  <script src="../static/js/Pagina.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script> 
+</body>
+</html>

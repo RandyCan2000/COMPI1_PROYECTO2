@@ -68,14 +68,13 @@
     height: 30px;
   }
   #Reportes{
-      width: 80%;
-      height: 400px;
+      padding:0px 50px;
       background-color: rgba(172, 240, 94, 0.712);
       position: absolute;
       top: 915px;
       left: 10%;
       border-radius:8px;
-        box-shadow: 4px 4px 8px #999;
+      box-shadow: 4px 4px 8px #999;
   }
   #BotonesReportes{
       position: absolute;
@@ -93,6 +92,7 @@
     left: 5%;
     width: 90%;
     height: 90%;
+    size: initial;
     z-index: 0;
     border-radius: 8px;
   }
@@ -112,3 +112,15 @@
     color: white;
     border-radius: 8px;
 }
+#menu * { list-style:none;}
+#menu li{ line-height:180%;}
+#menu li a{color:#222; text-decoration:none;}
+#menu li a:before{ content:"\025b8"; color:#ddd; margin-right:4px;}
+#menu input[name="list"] {
+	position: absolute;
+	left: -1000em;
+	}
+#menu label:before{ content:"\025b8"; margin-right:4px;}
+#menu input:checked ~ label:before{ content:"\025be";}
+#menu .interior{display: none;}
+#menu input:checked ~ ul{display:block;}

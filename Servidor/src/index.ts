@@ -2,6 +2,7 @@ import express,{Application} from 'express';
 import rutas from './Rutas';
 import morgan from 'morgan';
 import cors from 'cors';
+
 class Servidor{
     public app:Application;
     

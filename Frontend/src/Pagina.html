@@ -34,57 +34,19 @@
   <div id="CajasTexto">
     
   </div>
+  <!--
   <div id="BotonesReportes">
-    <button id="Boton" (click)="MostarRep('CONSOLA')" (dblclick)="GuardarRep('CONSOLA')">CONSOLA</button>
-    <button id="Boton" (click)="MostarRep('HTML')" (dblclick)="GuardarRep('HTML')">HTLM</button>
-    <button id="Boton" (click)="MostarRep('JSON')" (dblclick)="GuardarRep('JSON')">JSON</button>
-    <button id="Boton" (click)="MostarRep('VARIABLES')">VARIABLES</button>
-    <button id="Boton" (click)="MostarRep('TOKENS')">TOKENS</button>
-    <button id="Boton" (click)="MostarRep('ERRORES')">ERRORES</button>
+    <button id="Boton" onclick="MostarRep('CONSOLA')">ArbolAST</button>
+    <button id="Boton" onclick="MostarRep('JSON')">JSON</button>
+    <button id="Boton" onclick="MostarRep('TOKENS')">TOKENS</button>
+    <button id="Boton" onclick="MostarRep('ERRORES')">ERRORES</button>
   </div>
+  -->
   <div id="Reportes">
-      <div id="VARIABLES" style="overflow:scroll;">
-        <table id="RepText" class="VARIABLES" border="1" style="position: absolute; left: 5%; top: 5%;color: white;border-color: white;">
-          <tr>
-            <th> NOMBRE </th>
-            <th> TIPO </th>
-            <th> VALOR </th>
-          </tr>
-        </table>
-      </div>
-      <div id="CONSOLA">
-        <textarea id="RepText" class="CONSOLA" style="resize: none;width: 100%;height: 100%; overflow:scroll;" disabled></textarea>
-      </div>
-      <div id="HTML">
-        <textarea id="RepText" class="HTML" style="resize: none;width: 100%;height: 100%; overflow:scroll;" disabled></textarea>
-      </div>
-      <div id="JSON">
-        <textarea id="RepText" class="JSON"style="resize: none; width: 100%;height: 100%; overflow:scroll;" disabled></textarea>
-      </div>
-      <div id="TOKENS" style="overflow:scroll;">
-        <table id="RepText" class="TOKENS" border="1" style="position: absolute; left: 5%; top: 5%;color: white;border-color: white;">
-          <tr>
-            <th> ID </th>
-            <th> LEXEMA </th>
-            <th> FILA </th>
-            <th> COLUMNA </th>
-          </tr>
-        </table>
-      </div>
-      <div id="ERRORES" style="overflow:scroll;">
-        <table id="RepText" class="ERRORES" border="1" style="position: absolute; left: 5%; top: 5%;color: white;border-color: white;">
-          <tr>
-            <th> ID </th>
-            <th> LEXEMA </th>
-            <th> TIPO </th>
-            <th> ESPERADO </th>
-            <th> FILA </th>
-            <th> COLUMNA </th>
-          </tr>
-        </table>
-      </div>
+    <ul id="menu">
+
+    </ul>
   </div>
-	
 	<!--Fin HTML-->
   <!--JS-->
   <script src="../static/js/Pagina.js"></script>

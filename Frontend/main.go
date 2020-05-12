@@ -16,8 +16,8 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/PROYECTO2", index)
+	http.HandleFunc("/", index)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	fmt.Println("SERVIDOR DE HTML FUNCIONANDO")
-	http.ListenAndServe(":5000", nil)
+	http.ListenAndServe(":4205", nil)
 }

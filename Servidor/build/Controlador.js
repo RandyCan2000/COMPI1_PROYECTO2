@@ -25,7 +25,13 @@ class Controladores {
         if (AGREGAR == false) {
             Globales_1.Globales.ANALIZADO.push(new Analizado_1.Analizado(req.body.NOMBRE, req.body.TEXTO, Globales_1.Globales.TOK, JSON.parse(a), Globales_1.Globales.ERR));
         }
-        let SEND_JSON = JSON.stringify({ ArbolAST: [JSON.parse(a)], ERRORES: Globales_1.Globales.ERR, TOKENS: Globales_1.Globales.TOK, ANALIZADO: Globales_1.Globales.ANALIZADO });
+        let SEND_JSON;
+        try {
+            SEND_JSON = JSON.stringify({ ArbolAST: [JSON.parse(a)], ERRORES: Globales_1.Globales.ERR, TOKENS: Globales_1.Globales.TOK, ANALIZADO: Globales_1.Globales.ANALIZADO });
+        }
+        catch (error) {
+            SEND_JSON = JSON.stringify({ ArbolAST: [], ERRORES: Globales_1.Globales.ERR, TOKENS: Globales_1.Globales.TOK, ANALIZADO: Globales_1.Globales.ANALIZADO });
+        }
         res.json(JSON.parse(SEND_JSON));
     }
 }

@@ -1,18 +1,34 @@
-ContadorCapazRep=1;
+
+//numero que permite sobreponer un textarea hasta arriba
 ContadorCapaz=0;
+//contador de pestanias
 ContadorPestania=0;
+//nombre del textArea seleccionado
 Seleccionado="";
+//texto en textArea
 Traduccion="";
+//respuesta obtenida en JSON
 RESP_JSON=null;
+//variable que guarda las etiquetas para generar el arbol
 TREE="";
+//contador de niveles para el arbol
 NG=1;
 NGD=1;
 CN1=0;
 CN2=0;
 CN3=0;
+//arreglo de reporte errores tokens y analizado que es un arreglo de todos los analisis hecho previamente
 ERRORES=null;
 TOKENS=null;
 ANALIZADO=null;
+//listado de clases funciones y variables generales
+REPAFUN=[];
+REPVAR=[];
+REPCLASS=[];
+//listado de clases funciones y variables depurado (comparadas)
+LST_FUN_COPIA=[];
+LST_CLASE_COPIA=[];
+LST_VAR_COPIA=[];
 function leerArchivo(Direccion) {
     let file;
     file = Direccion[0];
@@ -83,14 +99,7 @@ function Analizar(){
             let aa=JSON.parse(http.responseText);
             RESP_JSON=aa.ArbolAST[0];
             ERRORES=aa.ERRORES;
-            ERRORES.forEach(element => {
-                console.log(element);
-            });
             TOKENS=aa.TOKENS;
-            TOKENS.forEach(element => {
-                console.log(element);
-            });
-            console.log("ANALIZADO");
             ANALIZADO=aa.ANALIZADO;
             ANALIZADO.forEach(element => {
                 console.log(element);
@@ -131,7 +140,7 @@ function RecorrerArbol(ASTNode) {
         TREE+="<li><a href=\"#r\">▹"+ASTNodeAux.NodoI+"</a></li>\n";
         CN1++;
     }else{
-        TREE+="<li><input type=\"checkbox\" name=\"list\" id=\"nivel"+NG+"-"+CN1+"\"><label for=\"nivel"+NG+"-"+CN1+"\">"+ASTNodeAux.NodoI+"</label>\n";
+        TREE+="<li><input type=\"checkbox\" name=\"list\" id=\"nivel"+NG+"-"+CN1+"\" checked><label for=\"nivel"+NG+"-"+CN1+"\">"+ASTNodeAux.NodoI+"</label>\n";
         CN1++;
         TREE+="<ul class=\"interior\">\n";
         NG++;
@@ -146,7 +155,7 @@ function RecorrerArbol(ASTNode) {
         TREE+="<li><a href=\"#r\">▹"+ASTNodeAux.NodoE+"</a></li>\n";
         CN2++;
     }else{
-        TREE+="<li><input type=\"checkbox\" name=\"list\" id=\"nivel"+NG+"-"+CN2+"\"><label for=\"nivel"+NG+"-"+CN2+"\">"+ASTNodeAux.NodoE+"</label>\n";
+        TREE+="<li><input type=\"checkbox\" name=\"list\" id=\"nivel"+NG+"-"+CN2+"\" checked><label for=\"nivel"+NG+"-"+CN2+"\">"+ASTNodeAux.NodoE+"</label>\n";
         CN2++;
         TREE+="<ul class=\"interior\">\n";
         NG++;
@@ -161,7 +170,7 @@ function RecorrerArbol(ASTNode) {
         TREE+="<li><a href=\"#r\">▹"+ASTNodeAux.NodoD+"</a></li>\n";
         CN3++;
     }else{
-        TREE+="<li><input type=\"checkbox\" name=\"list\" id=\"nivel"+NG+"-"+CN3+"\"><label for=\"nivel"+NG+"-"+CN3+"\">"+ASTNodeAux.NodoD+"</label>\n";
+        TREE+="<li><input type=\"checkbox\" name=\"list\" id=\"nivel"+NG+"-"+CN3+"\" checked><label for=\"nivel"+NG+"-"+CN3+"\">"+ASTNodeAux.NodoD+"</label>\n";
         CN3++;
         TREE+="<ul class=\"interior\">\n";
         NG++;
@@ -171,10 +180,6 @@ function RecorrerArbol(ASTNode) {
         TREE+="</li>\n";
     }
     //FIN NODO DERECHA
-}
-function MostarRep(Reporte) {
-    ContadorCapazRep++;
-    document.getElementById(Reporte.toString()).style.zIndex=ContadorCapazRep.toString();
 }
 
 function CREAR_ARCHIVO(TEXTO,NOMBRE){
@@ -244,4 +249,230 @@ function CrearHTMLERRORES(){
     TEXTO+=`</body>
     </html>`;
     CREAR_ARCHIVO(TEXTO,"ERRORES.html");
+}
+
+function REP(){
+    REPAFUN=[];
+    REPVAR=[];
+    REPCLASS=[];
+    LST_FUN_COPIA=[];
+    LST_CLASE_COPIA=[];
+    LST_VAR_COPIA=[];
+    GEN_LST_FUN_CLASS_VAR(ANALIZADO);//recupera todas las funciones clases y variables y las guarda en REPFUN REPCLASS y REPVAR Respectivamente
+    Comparar_Clases(REPCLASS,REPAFUN);//Busca las clases y funciones Copia las guarda en LST_CLASE_COPIA y LST_FUN_COPIA respectivamente
+    Comparar_Varibales_Copia(REPVAR);//BUSCA LAS VARIBALES COPIA y las GUARDA EN LST_VAR_COPIA
+    CREAR_REP_COPIAS(LST_CLASE_COPIA,LST_FUN_COPIA,LST_VAR_COPIA);//genera HTML CON EL REPORTE
+}
+//REPANALIZADO
+function GEN_LST_FUN_CLASS_VAR(ANALISIS){
+    let ID_CLASES=0;
+    ANALISIS.forEach(element => {
+        TOK=element.TOKENS;
+        let CON_LLAVE_CLASE=0;
+        let CON_LLAVE_FUN=0;
+        let Nombre_Clase="";
+        let Nombre_FUN="";
+        let Contador_Metodos=0;
+        let Parametros="";
+        let PERM_AGG_FUN=false;
+        for (let i = 0; i < TOK.length; i++) {
+            if(TOK[i].Token=="class"){
+                Nombre_Clase="";
+                try {
+                    if(TOK[i+2].Token=="{"){
+                        CON_LLAVE_CLASE=0;
+                        Nombre_Clase=TOK[i+1].Token;
+                        i=i+1;
+                        ID_CLASES++;
+                    }
+                } catch (error) {}
+            }
+            else if(TOK[i].Token=="int"||TOK[i].Token=="double"||TOK[i].Token=="char"||
+            TOK[i].Token=="String"||TOK[i].Token=="boolean"||TOK[i].Token=="void"){
+                try {
+                    let VAR="";
+                    if(TOK[i+2].Token=="("){
+                        Parametros="";
+                        Nombre_FUN=TOK[i+1].Token;
+                        for(let j = i+3; j < TOK.length; j++){
+                            if(TOK[j].Token==")"){
+                                if(TOK[j+1].Token=="{"){
+                                    CON_LLAVE_FUN=0;
+                                }
+                                Contador_Metodos++;
+                                i=j;
+                                break;
+                            }
+                            else{Parametros+=TOK[j].Token+" ";}
+                        }
+                    }else if(TOK[i+2].Token==","){
+                        for(let j = i+1; j < TOK.length; j++){
+                            if(TOK[j].Token=="="||TOK[j].Token==";"){
+                                let vars=VAR.split(",");
+                                vars.forEach(element => {
+                                    REPVAR.push(JSON.stringify({ID:ID_CLASES,Tipo:TOK[i].Token,Nombre:element,Funcion:Nombre_FUN,Clase:Nombre_Clase}));
+                                });
+                                i=j;
+                                break;
+                            }else{
+                                VAR+=TOK[j].Token;
+                            }
+                        }
+                    }else if(TOK[i+2].Token==";"||TOK[i+2].Token=="="){
+                        REPVAR.push(JSON.stringify({ID:ID_CLASES,Tipo:TOK[i].Token,Nombre:TOK[i+1].Token,Funcion:Nombre_FUN,Clase:Nombre_Clase}));
+                        i=i+2;
+                    }
+                } catch (error) {}
+            }
+            else if(TOK[i].Token=="return"){
+                if(TOK[i+1].Token!=";"){
+                    REPAFUN.push(JSON.stringify({ID:ID_CLASES,Clase:Nombre_Clase,Funcion:Nombre_FUN,Variables:Parametros,Retorna:TOK[i+1].Token}));
+                    i=i+1;
+                }else{
+                    REPAFUN.push(JSON.stringify({ID:ID_CLASES,Clase:Nombre_Clase,Funcion:Nombre_FUN,Variables:Parametros,Retorna:""}));
+                }
+                PERM_AGG_FUN=true;
+            }
+            else if(TOK[i].Token=="{"){
+                CON_LLAVE_CLASE++;
+                CON_LLAVE_FUN++;
+            }
+            else if(TOK[i].Token=="}"){
+                CON_LLAVE_CLASE--;
+                CON_LLAVE_FUN--;
+                if(CON_LLAVE_CLASE==0){
+                    REPCLASS.push(JSON.stringify({ID:ID_CLASES,Clase:Nombre_Clase,Cantidad_Funciones:Contador_Metodos}));
+                    Contador_Metodos=0;
+                }
+                if(CON_LLAVE_FUN==0){
+                    if(PERM_AGG_FUN==false){
+                        REPAFUN.push(JSON.stringify({ID:ID_CLASES,Clase:Nombre_Clase,Funcion:Nombre_FUN,Variables:Parametros,Retorna:""}));
+                    }
+                    Nombre_FUN="";
+                    PERM_AGG_FUN=false;
+                }
+            }
+        }
+    });
+}
+
+function Comparar_Clases(LST_CLASES,LST_FUN){
+    for (let i = 0; i < LST_CLASES.length; i++) {
+        let CLASE1=JSON.parse(LST_CLASES[i]);
+        for (let j = i+1; j < LST_CLASES.length; j++) {
+            let CLASE2=JSON.parse(LST_CLASES[j]);
+            if(CLASE1.Clase==CLASE2.Clase){
+                let LST_FUN_AUX=[];
+                LST_FUN.forEach(element => {
+                    let FUN=JSON.parse(element);
+                    if(FUN.ID==CLASE1.ID||FUN.ID==CLASE2.ID){
+                        LST_FUN_AUX.push(FUN);
+                    }
+                });
+                let CONTADOR_ACIERTOS_COPIA=0;
+                for (let K = 0; K < LST_FUN_AUX.length; K++) {
+                    let FUN1=LST_FUN_AUX[K];
+                    for (let L = K+1; L < LST_FUN_AUX.length; L++) {
+                        let FUN2=LST_FUN_AUX[L];
+                        if(FUN1.Funcion==FUN2.Funcion && FUN1.ID!=FUN2.ID &&
+                        FUN1.Variables==FUN2.Variables && FUN1.Retorna==FUN2.Retorna){
+                            LST_FUN_COPIA.push(FUN1);
+                            CONTADOR_ACIERTOS_COPIA++;
+                        }
+                    } 
+                }
+                let PORCENTAJE_COPIA=(CONTADOR_ACIERTOS_COPIA/CLASE1.Cantidad_Funciones)*100;
+                LST_CLASE_COPIA.push(JSON.parse(JSON.stringify({ID:CLASE1.ID,Clase:CLASE1.Clase,Cantidad_Funciones:CLASE1.Cantidad_Funciones,Porcentaje:PORCENTAJE_COPIA})));
+            }
+        }
+    }
+}
+
+function Comparar_Varibales_Copia(LST_VAR){
+    for (let i = 0; i < LST_VAR.length; i++) {
+        let VAR1=JSON.parse(LST_VAR[i]);
+        for (let j = i+1; j < LST_VAR.length; j++) {
+            let VAR2=JSON.parse(LST_VAR[j]);
+            if(VAR1.Clase==VAR2.Clase && VAR1.ID!=VAR2.ID && 
+                VAR1.Tipo==VAR2.Tipo && VAR1.Nombre==VAR2.Nombre &&
+                VAR1.Funcion==VAR2.Funcion){
+                    LST_VAR_COPIA.push(VAR1);
+                }
+        }
+    }
+}
+
+function CREAR_REP_COPIAS(LST_CLASES,LST_FUN,LST_VAR){
+    let TEXTO=`
+    <html>
+    <head>
+    <title>REPORTE</title>
+    </head>
+    <body style="text-align:center">`;
+    TEXTO+=`<table border="1">
+        <caption>CLASES COPIA</caption>
+        <tbody>`;
+    TEXTO+="<tr>"
+    TEXTO+="<th>CLASE</th>";
+    TEXTO+="<th>CANTIDAD DE FUNCIONES</th>";
+    TEXTO+="<th>PORCENTAJE COPIA</th>";
+    TEXTO+="</tr>";
+    LST_CLASES.forEach(element => {
+        TEXTO+="<tr>"
+        TEXTO+="<td>"+element.Clase+"</td>";
+        TEXTO+="<td>"+element.Cantidad_Funciones+"</td>";
+        TEXTO+="<td>"+element.Porcentaje+"</td>";
+        TEXTO+="</tr>";
+    });
+    TEXTO+=`</tbody>
+    </table>`;
+    TEXTO+="<br><br>";
+
+
+    TEXTO+=`<table border="1">
+        <caption>FUNCIONES COPIA</caption>
+        <tbody>`;
+    TEXTO+="<tr>"
+    TEXTO+="<th>FUNCION</th>";
+    TEXTO+="<th>CLASE</th>";
+    TEXTO+="<th>PARAMETROS</th>";
+    TEXTO+="<th>RETORNA</th>";
+    TEXTO+="</tr>";
+    LST_FUN.forEach(element => {
+        TEXTO+="<tr>"
+        TEXTO+="<td>"+element.Funcion+"</td>";
+        TEXTO+="<td>"+element.Clase+"</td>";
+        TEXTO+="<td>"+element.Variables+"</td>";
+        TEXTO+="<td>"+element.Retorna+"</td>";
+        TEXTO+="</tr>";
+    });
+
+    TEXTO+=`</tbody>
+    </table>`;
+
+    TEXTO+="<br><br>";
+
+
+    TEXTO+=`<table border="1">
+        <caption>VARIABLES COPIA</caption>
+        <tbody>`;
+    TEXTO+="<tr>"
+    TEXTO+="<th>NOMBRE</th>";
+    TEXTO+="<th>TIPO</th>";
+    TEXTO+="<th>FUNCION</th>";
+    TEXTO+="<th>CLASE</th>";
+    TEXTO+="</tr>";
+    LST_VAR.forEach(element => {
+        TEXTO+="<tr>"
+        TEXTO+="<td>"+element.Nombre+"</td>";
+        TEXTO+="<td>"+element.Tipo+"</td>";
+        TEXTO+="<td>"+element.Funcion+"</td>";
+        TEXTO+="<td>"+element.Clase+"</td>";
+        TEXTO+="</tr>";
+    });
+
+
+    TEXTO+=`</body>
+    </html>`;
+    CREAR_ARCHIVO(TEXTO,"REPORTE_COPIA.html");
 }

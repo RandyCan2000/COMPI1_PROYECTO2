@@ -11,15 +11,12 @@ class Controladores {
         let a = Analizador.parse(req.body.TEXTO);
         Globales_1.Globales.ANALIZADO.forEach(element => {
             if (req.body.NOMBRE == element.Nombre) {
-                if (req.body.TEXTO != element.Texto) {
-                    element.Texto = req.body.TEXTO;
-                    element.ArbolAST = JSON.parse(a);
-                    element.TOKENS = Globales_1.Globales.TOK;
-                    element.ERRORES = Globales_1.Globales.ERR;
-                    AGREGAR = true;
-                    return;
-                }
+                element.Texto = req.body.TEXTO;
+                element.ArbolAST = JSON.parse(a);
+                element.TOKENS = Globales_1.Globales.TOK;
+                element.ERRORES = Globales_1.Globales.ERR;
                 AGREGAR = true;
+                return;
             }
         });
         if (AGREGAR == false) {
